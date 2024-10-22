@@ -1,22 +1,23 @@
 import { createContext, useState, useEffect } from "react";
-import { jwtDecode } from "jwt-decode";
+import jwt_decode from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 
 const AuthContext = createContext();
-const token = 'lewis254'
 
 export default AuthContext;
 
 export const AuthProvider = ({ children }) => {
-  let [authTokens, setAuthTokens] = useState(token);
-  let [user, setUser] = useState(() => {
-    try {
-      return jwtDecode(token);
-    } catch {
-      return null;
-    }
-  });
+  let [authTokens, setAuthTokens] = useState(() =>
+    localStorage.getItem("authTokens")
+      ? JSON.parse(localStorage.getItem("authTokens"))
+      : "xxx"
+  );
+  let [user, setUser] = useState(() =>
+    localStorage.getItem("authTokens")
+      ? jwt_decode(localStorage.getItem("authTokens"))
+      : "xxx"
+  );
 
   const navigate = useNavigate();
 
@@ -39,10 +40,11 @@ export const AuthProvider = ({ children }) => {
     console.log(response.status);
 
     if (response.status === 200) {
-      setAuthTokens(data.accessToken);
-      setUser(jwtDecode(data.accessToken));
+      setAuthTokens(data);
+      setUser(jwt_decode(data.accessToken));
       console.log(authTokens);
       console.log(data);
+      localStorage.setItem("authTokens", JSON.stringify(data));
       api.defaults.headers["Authorization"] = "Bearer " + data.accessToken;
       navigate("/home");
     } else {
@@ -53,10 +55,13 @@ export const AuthProvider = ({ children }) => {
 
   let logoutUser = () => {
     const response = api.post("/auth/logout", {
-      Authorization: "Bearer " + authTokens.trim(),
+      Authorization:
+        "Bearer " +
+        JSON.parse(localStorage.getItem("authTokens")).accessToken.trim(),
     });
-    setAuthTokens(null);
-    setUser(null);
+    setAuthTokens("xxx");
+    setUser("xxx");
+    localStorage.removeItem("authTokens");
     api.defaults.headers["Authorization"] = null;
     navigate("/login");
   };
