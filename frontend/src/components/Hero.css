@@ -1,0 +1,9 @@
+.hero h1 {
+    font-size: 4rem; /* Adjust the size as needed */
+    color: #ffcc00; /* Bright color for contrast */
+    font-weight: 900; /* Bold font */
+    text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.7); /* Shadow for legibility */
+    margin: 0;
+    padding: 0;
+  }
+  

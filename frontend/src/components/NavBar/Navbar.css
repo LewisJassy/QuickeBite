@@ -1,0 +1,53 @@
+/* Navbar styling */
+.navbar {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .navbar-logo {
+    font-size: 3rem; /* Set the desired font size for QuickBite */
+    font-weight: bold; /* Make it bold */
+    color: #ffffff; /* Change color to white */
+    text-decoration: none; /* Remove underline */
+  }
+  
+  .navbar ul {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .navbar ul li {
+    margin: 0 1rem;
+  }
+  
+  .navbar ul li a {
+    color: #fff; /* Link color */
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  .navbar ul li a:hover {
+    color: #ffc107; /* Change color on hover */
+  }
+  
+  /* Mobile Navbar: Stack items vertically on smaller screens */
+  @media (max-width: 768px) {
+    .navbar ul {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .navbar ul li {
+      margin-bottom: 1rem;
+    }
+  }
+  

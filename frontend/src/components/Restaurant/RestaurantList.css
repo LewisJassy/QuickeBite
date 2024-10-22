@@ -1,0 +1,30 @@
+.restaurant-list {
+    padding: 2rem; /* Add padding for better spacing */
+    color: #fff; /* Change text color to white for better contrast */
+  }
+  
+  .list-title {
+    font-size: 2.5rem; /* Adjust title size */
+    margin-bottom: 1.5rem; /* Space below the title */
+    text-align: center; /* Center align title */
+  }
+  
+  ul {
+    list-style-type: none; /* Remove default list styling */
+    padding: 0; /* Remove padding */
+  }
+  
+  .restaurant-item {
+    margin: 1rem 0; /* Space between items */
+  }
+  
+  .restaurant-link {
+    text-decoration: none; /* Remove underline */
+    color: #ffc107; /* Use your primary link color */
+    font-weight: bold; /* Make the link bold */
+  }
+  
+  .restaurant-link:hover {
+    text-decoration: underline; /* Underline on hover for effect */
+  }
+  

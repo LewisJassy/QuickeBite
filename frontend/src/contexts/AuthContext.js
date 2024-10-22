@@ -12,8 +12,34 @@ export const AuthProvider = ({ children }) => {
     const token = localStorage.getItem('token');
     if (token) {
       // TODO: Implement a function to validate the token and get user info
-      // For now, we'll just set a dummy user
-      setUser({ id: '1', name: 'John Doe' });
+      const validateToken = async (token) => {
+        try {
+          const response = await fetch('/api/validate-token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+          });
+          if (!response.ok) {
+        throw new Error('Token validation failed');
+          }
+          const data = await response.json();
+          return data.user;
+        } catch (error) {
+          console.error('Token validation error:', error);
+          return null;
+        }
+      };
+
+      validateToken(token).then((user) => {
+        if (user) {
+          setUser(user);
+        } else {
+          localStorage.removeItem('token');
+        }
+        setLoading(false);
+      });
     }
     setLoading(false);
   }, []);

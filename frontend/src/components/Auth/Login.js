@@ -1,42 +1,82 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { login } from '../../services/authService';
+import React, { useContext, useState } from "react";
+import Helmet from "../Helmet/Helmet";
+import CommonSection from "../UI/common-section/CommonSection";
+import { Container, Row, Col } from "reactstrap";
+import { Link } from "react-router-dom";
+import AuthService from "../../services/authService";
+import { useNavigate } from "react-router-dom";
+import AuthContext from "../../services/AuthContext";
 
-function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-    const navigate = useNavigate();
+const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleSubmit = async (e) => {
+  let { loginUser } = useContext(AuthContext);
+
+  const navigate = useNavigate();
+
+  const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const data = await login(email, password);
-      localStorage.setItem('token', data.token);
-      navigate('/Homepage');
-    } catch (error) {
-      console.error('Login failed:', error);
+      await AuthService.login(email, password).then(
+        () => {
+          navigate("/home");
+          //window.location.reload();
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+    } catch (err) {
+      console.log(err);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Email"
-        required
-      />
-      <input
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Password"
-        required
-      />
-      <button type="submit">Login</button>
-    </form>
+    <Helmet title="Logowanie">
+      <CommonSection title="Logowanie" />
+      <section>
+        <Container>
+          <Row>
+            <Col lg="6" md="6" sm="12" className="m-auto text-center">
+              <h3>Logowanie</h3>
+
+              <form className="form mb-5" onSubmit={loginUser}>
+                <div className="form__group">
+                  <input
+                    id="email"
+                    type="email"
+                    placeholder="e-mail"
+                    required
+                    //value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+                <div className="form__group">
+                  <input
+                    id="password"
+                    type="password"
+                    placeholder="hasło"
+                    required
+                    //value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </div>
+                <button type="submit" className="addTOCart__btn">
+                  Zaloguj się
+                </button>
+              </form>
+              <Link to="/register">Nie masz konta? Zarejestruj się!</Link>
+              <br />
+              <Link to="/forgot-password">
+                Nie pamiętasz hasła? Zresetuj je!
+              </Link>
+            </Col>
+          </Row>
+        </Container>
+      </section>
+    </Helmet>
   );
-}
+};
 
 export default Login;
