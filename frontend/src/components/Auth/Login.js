@@ -7,16 +7,16 @@ import './Login.css'; // Import your CSS file
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const data = await login(email, password);
       localStorage.setItem('token', data.token);
-      navigate('/Homepage');
-    } catch (error) {
-      console.error('Login failed:', error);
+    } catch (err) {
+      console.error('Login failed:', err);
+      setError('Login failed. Please check your credentials and try again.');
     }
   };
 
@@ -41,6 +41,7 @@ function Login() {
           />
           <button type="submit">Login</button>
         </form>
+        {error && <p style={{ color: 'red'}}>{error}</p>}
       </div>
     </div>
   );

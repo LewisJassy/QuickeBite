@@ -1,29 +1,29 @@
-from . import db, bcrypt
-from .models import User
-from flask_jwt_extended import create_access_token
+import jwt
+import datetime
+from app.models import User
+from flask import current_app
+from werkzeug.security import generate_password_hash, check_password_hash
 
-class UserService:
-    def create_user(self, user_data):
-        if User.query.filter_by(email=user_data['email']).first():
-            return {'error': 'Email already registered'}
-        
-        new_user = User(
-            username=user_data['username'],
-            email=user_data['email'],
-            password_hash=bcrypt.generate_password_hash(user_data['password']).decode('utf-8')
-        )
-        db.session.add(new_user)
-        db.session.commit()
-        return {'id': new_user.id, 'username': new_user.username}
+def generate_token(user_id):
+    """
+    Generate a JWT token for authentication
+    """
+    token = jwt.encode({
+        'id': user_id,
+        'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1)
+    }, current_app.config['SECRET_KEY'], algorithm='HS256')
 
-    def authenticate_user(self, credentials):
-        user = User.query.filter_by(email=credentials['email']).first()
-        if user and bcrypt.check_password_hash(user.password_hash, credentials['password']):
-            access_token = create_access_token(identity=user.id)
-            return {'access_token': access_token}
-        return {'error': 'Invalid credentials'}
+    return token
 
-    def get_user_by_id(self, user_id):
-        user = User.query.get(user_id)
-        return {'id': user.id, 'username': user.username}
+def verify_password(password, hashed_password):
+    """
+    Verify a password against a hashed password
+    """
+    return check_password_hash(hashed_password, password)
+
+def hash_password(password):
+    """
+    Hash a password before storing it in the database
+    """
+    return generate_password_hash(password)
     

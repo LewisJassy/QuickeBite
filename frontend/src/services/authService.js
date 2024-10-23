@@ -1,7 +1,8 @@
 import axios from 'axios';
 
-const API_URL = 'http://127.0.0.1:5000/';
+const API_URL = 'http://127.0.0.1:5000/auth';
 
+// function to handle login
 export const login = async (email, password) => {
   try {
     const response = await axios.post(`${API_URL}/login`, { email, password });
@@ -32,10 +33,23 @@ export const logout = async () => {
   }
 };
 
+export const getprofile = async (token) => {
+  try {
+    const response = await axios.get(`${API_URL}/profile`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+} catch (error) {
+    console.error('Profile error:', error);
+    throw error;
+  }
+};
+
 const AuthService = {
   login,
   register,
   logout,
+  getprofile
 };
 
 export default AuthService;
