@@ -10,7 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-const uri = 'mongodb://localhost:27017/restaurant-service'
+const uri = 'mongodb://localhost:27017/quickebite'
 
 mongoose.connect(uri, {
     useNewUrlParser: true,

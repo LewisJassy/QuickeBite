@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Restaurant = require('./models/restaurant');
+const Restaurant = require('./models/restaurantModel');
 
 const seedRestaurants = async () => {
   await mongoose.connect('mongodb://localhost:27017/quickebite', {

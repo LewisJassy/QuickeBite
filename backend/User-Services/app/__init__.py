@@ -18,10 +18,7 @@ def create_app():
     bcrypt.init_app(app)
     jwt.init_app(app)
 
-    with app.app_context():
-        db.create_all()
-
-    from .routes import user_blueprint
-    app.register_blueprint(user_blueprint)
+    from app.auth_controller import auth_blueprint
+    app.register_blueprint(auth_blueprint, url_prefix='/auth')
 
     return app

@@ -9,7 +9,7 @@ import DeliveryTracker from './components/Delivery/DeliveryTracker';
 import Navbar from './components/NavBar/Navbar.js';
 import Homepage from './components/HomePage/Homepage';
 import Register from './components/Register/Register.js'
-import Profile from './components/Profile/Profile';
+
 function App() {
   return (
     <AuthProvider>
@@ -20,7 +20,7 @@ function App() {
             <Routes>
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              <Route path="/profile" element={<Profile/>} />
+              ?
               <Route path="/restaurants" element={<RestaurantList />} />
               <Route path="/order" element={<OrderForm />} />
               <Route path="/track" element={<DeliveryTracker />} />
