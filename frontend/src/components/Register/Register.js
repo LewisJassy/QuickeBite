@@ -17,7 +17,7 @@ const Register = () => {
             await register(username, email, password);
             setSuccess(true);
             setTimeout(() => {
-                window.location.href = '/Homepage';
+                window.location.href = '/';
             }, 1500);
         } catch (e) {
             setError('Failed to register. Please try again.');

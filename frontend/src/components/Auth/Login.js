@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { login } from '../../services/authService';
 import Hero from '../Hero'; // Import the Hero component
 import './Login.css'; // Import your CSS file
@@ -8,12 +8,14 @@ function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const data = await login(email, password);
       localStorage.setItem('token', data.token);
+      navigate('/')
     } catch (err) {
       console.error('Login failed:', err);
       setError('Login failed. Please check your credentials and try again.');

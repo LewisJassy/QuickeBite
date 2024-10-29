@@ -11,12 +11,12 @@ export const AuthProvider = ({ children }) => {
   let [authTokens, setAuthTokens] = useState(() =>
     localStorage.getItem("authTokens")
       ? JSON.parse(localStorage.getItem("authTokens"))
-      : "xxx"
+      : null
   );
   let [user, setUser] = useState(() =>
     localStorage.getItem("authTokens")
       ? jwt_decode(localStorage.getItem("authTokens"))
-      : "xxx"
+      : null
   );
 
   const navigate = useNavigate();
@@ -49,7 +49,7 @@ export const AuthProvider = ({ children }) => {
       navigate("/home");
     } else {
       console.log(user);
-      alert("Niepoprawny email lub hasło!");
+      alert("Incorrect email or password!");
     }
   };
 
@@ -59,12 +59,18 @@ export const AuthProvider = ({ children }) => {
         "Bearer " +
         JSON.parse(localStorage.getItem("authTokens")).accessToken.trim(),
     });
-    setAuthTokens("xxx");
-    setUser("xxx");
+    setAuthTokens(null);
+    setUser(null);
     localStorage.removeItem("authTokens");
     api.defaults.headers["Authorization"] = null;
     navigate("/login");
   };
+
+  useEffect(() => {
+    if (authTokens) {
+      setUser(jwt_decode(authTokens))
+    }
+  }, [authTokens]);
 
   let contextData = {
     user: user,
