@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify, current_app
 from app.models import User
-from app import db, bcrypt, jwt
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from app import db, bcrypt
 
 auth_blueprint = Blueprint('auth', __name__)
 
@@ -40,15 +41,17 @@ def register():
 
 @auth_blueprint.route('/login', methods=['POST'])
 def login():
+    print('Trying to login')
     data = request.get_json()
     email = data.get('email')
     password = data.get('password')
+    print(f"Received data: email={data.get('email')}, password={data.get('password')}")
 
     user = User.query.filter_by(email=email).first()
-    if not user or not bcrypt.check_password_hash(user.password, password):
+    if not user or not bcrypt.check_password_hash(user.password_hash, password):
         return jsonify({'message': 'Invalid credentials'}), 401
     
-    token = jwt.encode({'id': user.id}, current_app.config['SECRET_KEY'], algorithm='HS256')
+    token =  create_access_token(identity=user.id)
     return jsonify({'token': token}), 200
 
 @auth_blueprint.route('/profile', methods=['GET'])
@@ -58,8 +61,7 @@ def profile():
         return jsonify({'message': 'Token is missing'}), 401
     
     try:
-        data = jwt.decode(token, verify=False)
-        user_id = data['id']
+        user_id = get_jwt_identity()
         user = User.query.get(user_id)
     except:
         return jsonify({'message': 'Token is invalid'}), 401
