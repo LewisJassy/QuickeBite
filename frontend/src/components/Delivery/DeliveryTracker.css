@@ -1,0 +1,35 @@
+/* Center content within the hero background */
+.delivery-tracker-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  /* Status text styling */
+  .status-text {
+    font-weight: bold;
+    color: #ffc107;
+  }
+  
+  /* Hero background and layout consistent with other pages */
+  .hero {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-size: cover;
+    background-position: center;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .delivery-tracker-container {
+      width: 90%;
+      padding: 1.5rem;
+    }
+  }
+  

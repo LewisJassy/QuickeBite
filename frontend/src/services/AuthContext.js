@@ -1,84 +1,91 @@
-import { createContext, useState, useEffect } from "react";
+// frontend/src/contexts/AuthContext.js
+import React, { createContext, useState, useEffect } from "react";
 import jwt_decode from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
+import { login, register, logout as logoutService } from "../services/authService";
 
 const AuthContext = createContext();
 
-export default AuthContext;
-
 export const AuthProvider = ({ children }) => {
-  let [authTokens, setAuthTokens] = useState(() =>
+  const navigate = useNavigate();
+
+  const [authTokens, setAuthTokens] = useState(() =>
     localStorage.getItem("authTokens")
       ? JSON.parse(localStorage.getItem("authTokens"))
       : null
   );
-  let [user, setUser] = useState(() =>
+
+  const [user, setUser] = useState(() =>
     localStorage.getItem("authTokens")
-      ? jwt_decode(localStorage.getItem("authTokens"))
+      ? jwt_decode(JSON.parse(localStorage.getItem("authTokens")).token)
       : null
   );
 
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
 
-  let loginUser = async (e) => {
-    e.preventDefault();
-    let response = await fetch("http://localhost:5000/api/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: e.target.email.value,
-        password: e.target.password.value,
-      }),
-    });
-    let data = await response.json();
-    console.log("dta: ", data);
-    console.log("res: ", response);
-
-    console.log(response.status);
-
-    if (response.status === 200) {
+  const loginUser = async (email, password) => {
+    try {
+      const data = await login(email, password);
       setAuthTokens(data);
-      setUser(jwt_decode(data.accessToken));
-      console.log(authTokens);
-      console.log(data);
+      setUser(jwt_decode(data.token));
       localStorage.setItem("authTokens", JSON.stringify(data));
-      api.defaults.headers["Authorization"] = "Bearer " + data.accessToken;
-      navigate("/home");
-    } else {
-      console.log(user);
-      alert("Incorrect email or password!");
+      api.defaults.headers["Authorization"] = `Bearer ${data.token}`;
+      navigate("/"); // Redirect to dashboard or desired route
+    } catch (error) {
+      console.error("Login failed:", error);
+      throw error;
     }
   };
 
-  let logoutUser = () => {
-    const response = api.post("/auth/logout", {
-      Authorization:
-        "Bearer " +
-        JSON.parse(localStorage.getItem("authTokens")).accessToken.trim(),
-    });
+  const registerUser = async (username, email, password) => {
+    try {
+      const data = await register(username, email, password);
+      setAuthTokens(data);
+      setUser(jwt_decode(data.token));
+      localStorage.setItem("authTokens", JSON.stringify(data));
+      api.defaults.headers["Authorization"] = `Bearer ${data.token}`;
+      navigate("/"); // Redirect to dashboard or desired route
+    } catch (error) {
+      console.error("Registration failed:", error);
+      throw error;
+    }
+  };
+
+  const logoutUser = async () => {
+    try {
+      await logoutService(); // Ensure backend handles token invalidation if necessary
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
     setAuthTokens(null);
     setUser(null);
     localStorage.removeItem("authTokens");
     api.defaults.headers["Authorization"] = null;
-    navigate("/login");
+    navigate("/login"); // Redirect to login or desired route
   };
 
   useEffect(() => {
     if (authTokens) {
-      setUser(jwt_decode(authTokens))
+      setUser(jwt_decode(authTokens.token));
+      api.defaults.headers["Authorization"] = `Bearer ${authTokens.token}`;
     }
+    setLoading(false);
   }, [authTokens]);
 
-  let contextData = {
-    user: user,
-    loginUser: loginUser,
-    logoutUser: logoutUser,
+  const contextData = {
+    user,
+    authTokens,
+    loginUser,
+    registerUser,
+    logoutUser,
   };
 
   return (
-    <AuthContext.Provider value={contextData}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={contextData}>
+      {!loading && children}
+    </AuthContext.Provider>
   );
 };
+
+export default AuthContext;

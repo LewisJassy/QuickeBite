@@ -67,3 +67,13 @@ def profile():
         return jsonify({'message': 'Token is invalid'}), 401
     
     return jsonify({'message': 'Profile retrieved successfully', 'user': user.username}), 200
+
+@auth_blueprint.route('/validate-token', methods=['POST'])
+@jwt_required()
+def validate_token():
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+    if user:
+        return jsonify({'message': 'Token is valid', 'user': user.username}), 200
+    else:
+        return jsonify({'message': 'User not found'}), 404
