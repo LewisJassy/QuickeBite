@@ -19,10 +19,10 @@ mongoose.connect(uri, {
 .then(() => console.log('MongoDB connected'))
 .catch(err => console.error('MongoDB connection error:', err));
 
-app.use('/api/restaurants', restaurantRoute);
+app.use('/restaurants', restaurantRoute);
 
 const PORT = process.env.PORT || 5001;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server running on port http://localhost:${PORT}`));
 
 module.exports = app;
 console.log("\nRestaurant Services is running")

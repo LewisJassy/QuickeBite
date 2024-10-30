@@ -16,7 +16,7 @@ This project is a food delivery application designed with a microservices archit
 
 #### Frontend
 - **React**: For building user interfaces.
-- **Vite**: For fast and efficient development.
+<!-- - **Vite**: For fast and efficient development. -->
 
 #### Security
 - **JSON Web Tokens (JWT)**: For user authentication and authorization.
@@ -84,7 +84,7 @@ food-delivery-app/
 ### Frontend
 
 #### User Frontend
-- **Technology**: React, Vite
+- **Technology**: React,
 - **Responsibilities**: User interface for browsing restaurants, placing orders, and tracking deliveries.
 
 #### Admin Frontend
